@@ -206,9 +206,9 @@ Deployment (Docker / AWS)
 
 👥 Team
 Built by:
-Shivansh Gupta
-Vidhu Sharma
-Parth
+Shivansh Gupta,
+Vidhu Sharma,
+Parth and 
 Bhavesh
 
 📜 License
