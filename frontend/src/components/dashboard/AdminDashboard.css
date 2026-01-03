@@ -1,0 +1,50 @@
+.admin-dashboard-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.admin-dashboard-body {
+  display: flex;
+  flex: 1;
+}
+
+.admin-dashboard-content {
+  flex: 1;
+  padding: 24px;
+  background-color: #f1f5f9;
+}
+
+.admin-dashboard-content h1 {
+  margin-bottom: 6px;
+  font-size: 26px;
+  color: #0f172a;
+}
+
+.admin-subtitle {
+  color: #475569;
+  margin-bottom: 24px;
+}
+
+.admin-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.admin-card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.admin-card h3 {
+  margin-bottom: 8px;
+  color: #dc2626;
+}
+
+.admin-card p {
+  color: #475569;
+  font-size: 14px;
+}

@@ -1,21 +1,40 @@
-import axios from "axios";
+// Base URL of backend server
+const BASE_URL = "http://localhost:5000/api";
 
-const api = axios.create({
-  baseURL: "http://localhost:5000/api",
-  headers: {
+/**
+ * Generic API request helper
+ * Automatically attaches token and handles errors
+ */
+export const apiRequest = async (
+  endpoint,
+  method = "GET",
+  body = null,
+  token = null
+) => {
+  const headers = {
     "Content-Type": "application/json",
-  },
-});
+  };
 
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
 
-export default api;
+  const config = {
+    method,
+    headers,
+  };
+
+  if (body) {
+    config.body = JSON.stringify(body);
+  }
+
+  const response = await fetch(`${BASE_URL}${endpoint}`, config);
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "API request failed");
+  }
+
+  return data;
+};

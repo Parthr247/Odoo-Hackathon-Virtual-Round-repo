@@ -1,7 +1,37 @@
-import api from "./api";
+import { apiRequest } from "./api";
 
-export const checkInRequest = () => api.post("/attendance/check-in");
+/**
+ * Get today's attendance for logged-in user
+ * @param {string} token
+ * @returns {Object} attendance data
+ */
+export const getTodayAttendance = async (token) => {
+  return apiRequest("/attendance/today", "GET", null, token);
+};
 
-export const checkOutRequest = () => api.post("/attendance/check-out");
+/**
+ * Check-in user
+ * @param {string} token
+ * @returns {Object} check-in time
+ */
+export const checkIn = async (token) => {
+  return apiRequest("/attendance/check-in", "POST", null, token);
+};
 
-export const fetchAttendance = () => api.get("/attendance");
+/**
+ * Check-out user
+ * @param {string} token
+ * @returns {Object} check-out time
+ */
+export const checkOut = async (token) => {
+  return apiRequest("/attendance/check-out", "POST", null, token);
+};
+
+/**
+ * Get attendance history (admin or employee)
+ * @param {string} token
+ * @returns {Array} attendance records
+ */
+export const getAttendanceHistory = async (token) => {
+  return apiRequest("/attendance/history", "GET", null, token);
+};

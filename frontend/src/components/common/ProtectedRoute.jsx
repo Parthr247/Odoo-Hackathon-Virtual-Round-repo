@@ -1,12 +1,31 @@
+import { useContext } from "react";
 import { Navigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
-export default function ProtectedRoute({ children, role }) {
-  const token = localStorage.getItem("token");
-  const userRole = localStorage.getItem("role");
+/**
+ * ProtectedRoute
+ * @param {ReactNode} children - Component to render
+ * @param {string} role - Optional role ("admin" or "employee")
+ */
+const ProtectedRoute = ({ children, role }) => {
+  const { user, loading } = useContext(AuthContext);
 
-  if (!token) return <Navigate to="/" replace />;
+  // While checking auth (important for refresh)
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  if (role && role !== userRole) return <Navigate to="/" replace />;
+  // Not logged in
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Role-based protection
+  if (role && user.role !== role) {
+    return <Navigate to="/unauthorized" replace />;
+  }
 
   return children;
-}
+};
+
+export default ProtectedRoute;

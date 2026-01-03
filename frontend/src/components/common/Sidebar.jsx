@@ -1,15 +1,57 @@
-import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { NavLink } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import "./Sidebar.css";
 
-export default function Sidebar() {
+const Sidebar = () => {
+  const { user } = useContext(AuthContext);
+
+  if (!user) return null;
+
   return (
-    <aside className="w-60 h-screen bg-gray-100 p-4">
-      <ul className="space-y-3">
-        <li><Link to="/employee">Dashboard</Link></li>
-        <li><Link to="/employee/profile">Profile</Link></li>
-        <li><Link to="/employee/attendance">Attendance</Link></li>
-        <li><Link to="/employee/leave">Leave</Link></li>
-        <li><Link to="/employee/payroll">Payroll</Link></li>
-      </ul>
+    <aside className="sidebar">
+      {/* User Info */}
+      <div className="sidebar-header">
+        <h2>Dayflow</h2>
+        <p className="sidebar-role">
+          {user.name} <br />
+          <span>({user.role})</span>
+        </p>
+      </div>
+
+      {/* Navigation */}
+      <nav className="sidebar-nav">
+        <NavLink to="/dashboard" className="sidebar-link">
+          Dashboard
+        </NavLink>
+
+        <NavLink to="/attendance" className="sidebar-link">
+          Attendance
+        </NavLink>
+
+        <NavLink to="/leave" className="sidebar-link">
+          Leave Management
+        </NavLink>
+
+        <NavLink to="/payroll" className="sidebar-link">
+          Payroll
+        </NavLink>
+
+        {/* Admin Only */}
+        {user.role === "admin" && (
+          <>
+            <NavLink to="/admin/employees" className="sidebar-link">
+              Employees
+            </NavLink>
+
+            <NavLink to="/admin/approvals" className="sidebar-link">
+              Leave Approvals
+            </NavLink>
+          </>
+        )}
+      </nav>
     </aside>
   );
-}
+};
+
+export default Sidebar;

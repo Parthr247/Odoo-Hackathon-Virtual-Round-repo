@@ -1,34 +1,86 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginRequest } from "../../services/authService";
-import { useAuth } from "../../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
+import "./Login.css";
 
-export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login } = useContext(AuthContext);
 
-  const handleLogin = async () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
     try {
-      const res = await loginRequest({ email, password });
-      login(res.data);
-      navigate(res.data.role === "admin" ? "/admin" : "/employee");
+      // Call AuthContext login (API inside context)
+      const user = await login(formData.email, formData.password);
+
+      // Redirect based on role
+      if (user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      setError("Invalid email or password");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="h-screen flex items-center justify-center">
-      <div className="w-80 p-6 bg-white shadow">
-        <h2 className="text-xl mb-4">Login</h2>
-        {error && <p className="text-red-500">{error}</p>}
-        <input className="input" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
-        <input className="input" type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
-        <button className="btn-primary w-full" onClick={handleLogin}>Login</button>
-      </div>
+    <div className="login-container">
+      <form className="login-form" onSubmit={handleSubmit}>
+        <h2>Login to Dayflow</h2>
+
+        {error && <p className="login-error">{error}</p>}
+
+        <div className="login-field">
+          <label>Email</label>
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="login-field">
+          <label>Password</label>
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
+      </form>
     </div>
   );
-}
+};
+
+export default Login;

@@ -1,36 +1,92 @@
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
+// Auth
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
+
+// Dashboards
 import EmployeeDashboard from "./components/dashboard/EmployeeDashboard";
 import AdminDashboard from "./components/dashboard/AdminDashboard";
-import ProtectedRoute from "./components/common/ProtectedRoute";
+
+// Pages
 import Attendance from "./pages/attendance/Attendance";
 import Leave from "./pages/leave/Leave";
-import Profile from "./pages/profile/Profile";
 import Payroll from "./pages/payroll/Payroll";
+import Profile from "./pages/profile/Profile";
 
-export default function App() {
+// Common
+import ProtectedRoute from "./components/common/ProtectedRoute";
+
+const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
+    <Router>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
 
-      <Route path="/employee" element={
-        <ProtectedRoute role="employee">
-          <EmployeeDashboard />
-        </ProtectedRoute>
-      } />
+        {/* Employee Routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <EmployeeDashboard />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route path="/employee/profile" element={<Profile />} />
-      <Route path="/employee/attendance" element={<Attendance />} />
-      <Route path="/employee/leave" element={<Leave />} />
-      <Route path="/employee/payroll" element={<Payroll />} />
+        <Route
+          path="/attendance"
+          element={
+            <ProtectedRoute>
+              <Attendance />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route path="/admin" element={
-        <ProtectedRoute role="admin">
-          <AdminDashboard />
-        </ProtectedRoute>
-      } />
-    </Routes>
+        <Route
+          path="/leave"
+          element={
+            <ProtectedRoute>
+              <Leave />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/payroll"
+          element={
+            <ProtectedRoute>
+              <Payroll />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Admin Routes */}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Fallback */}
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+    </Router>
   );
-}
+};
+
+export default App;
